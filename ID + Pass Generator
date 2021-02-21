@@ -1,0 +1,143 @@
+import java.util.Scanner;
+import java.util.Random;
+
+public class Uts {
+
+	Scanner scan = new Scanner(System.in);
+	Random rand = new Random();
+	public Uts() {
+		
+		String name, tanggalLahir, username="";
+		
+		System.out.println("Selamat datang ke Username dan Password Generator");
+		System.out.println("=================================================");
+		System.out.print("Silahkan masukkan nama Anda: ");
+		name = scan.nextLine();
+		System.out.print("Silakan masukkan tanggal lahir Anda (ddmmyyyy): ");
+		tanggalLahir = scan.nextLine();
+		
+		if(tanggalLahir.length()!=8){
+			System.out.println("Maaf data yang Anda masukkan salah. Username dan password tidak dapat dibuat.\n- Salah memasukkan tanggal lahir. Harap gunakan ddmmyyyy");	
+			System.exit(0);
+		}
+		
+		int day = Integer.valueOf(tanggalLahir.substring(0, 2));
+		int month = Integer.valueOf(tanggalLahir.substring(2,4));
+		int year = Integer.valueOf(tanggalLahir.substring(4));
+		int age=0;
+		
+		//validasi umur
+		age = 2020-year;
+		if(age<20 || age>30){
+			System.out.println("Maaf data yang Anda masukkan salah. Username dan password tidak dapat dibuat.\n- Usia harus di antara 20-60 tahun.");
+			System.exit(0);
+		}
+		
+		//validasi month
+		if(month<1 || month>12){
+			System.out.println("Bulan tidak boleh lebih besar dari 12");
+			System.exit(0);
+		}
+		
+		boolean kabisat;
+		//syarat kabisat = tahun%4 dan %100 atau %400
+		if((year%4 == 0 && year%100 == 0) || year%400 == 0){
+			kabisat = true;
+		} 
+		
+		else {
+			kabisat = false;
+		}
+		
+		//validasi day
+		//30 hari = 1,3,4,7,8,10,12
+		//31 hari = 4,6,9,11
+		//28-29 hari = 2 (tahun kabisat bulan 2 nya 29 hari)
+		if(month==1 || month==3 || month==4 || month==7 || month == 8 || month == 10 || month == 12){
+			if(day<1 || day>30){
+				System.out.println("Hari dalam bulan" +month + " harus di antara 1 dan 30");
+				System.exit(0);
+			}
+		}
+		
+		else if(month==4 || month==6 || month==9 || month==11){
+			if(day<1 || day>31){
+				System.out.println("Hari dalam bulan" +month + " harus di antara 1 dan 31");
+				System.exit(0);
+			}
+		}
+		
+		else if(kabisat){
+			if(day<1 || day>29){
+				System.out.println("Hari dalam bulan" +month + " harus di antara 1 dan 29");
+				System.exit(0);
+			}
+		}
+		
+		else {
+			if(day<1 || day>28){
+				System.out.println("Hari dalam bulan" +month + " harus di antara 1 dan 28");
+				System.exit(0);
+			}
+		}
+		
+		//validasi username
+		username = name.toLowerCase();
+		username = username.replaceAll(" ", "");
+		
+		//kalo usernamenya <8 karakter maka dia ngulang sampe 8 karakter
+		while(username.length()<8){
+			username+=username;
+		}
+		
+		//kalo usernamenya >8 karakter maka dia ngambil 8 karakter terdepan
+		username = username.substring(0,8);;
+		
+		//utk kombinasi nomor 2 digit dari tanggal, bulan, tahun
+		String pDay, pMonth, pYear;
+		pDay = tanggalLahir.substring(0, 2);
+		pMonth = tanggalLahir.substring(2, 4);
+		pYear = tanggalLahir.substring(6);
+		
+		//random 6 kemungkinan yaitu 0,1,2,3,4,5
+		int random = rand.nextInt(6);
+		
+		switch(random){
+			case 0:
+				username = username + pDay + pMonth;
+				System.out.println("Username Anda adalah " + username);
+				break;
+				
+			case 1:
+				username = username + pMonth + pDay;
+				System.out.println("Username Anda adalah " + username);
+				break;
+				
+			case 2:
+				username = username + pDay + pYear;
+				break;
+				
+			case 3:
+				username = username + pYear + pDay;
+				break;
+				
+			case 4:
+				username = username + pMonth + pYear;
+				break;
+			
+			case 5:
+				username = username + pYear + pMonth;
+				break;
+		}
+		
+		System.out.println("\nSelamat datang " + name);
+		System.out.println("Username Anda adalah " + username);
+		System.out.println("Password Anda adalah " + tanggalLahir);
+		
+	}
+	public static void main(String[] args) {
+		new Uts();
+
+	}
+
+}
