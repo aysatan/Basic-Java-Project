@@ -1,0 +1,223 @@
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Vector;
+
+public class Main {
+
+	Scanner scan = new Scanner(System.in);
+	Random rand = new Random();
+	Vector<String>vId = new Vector<>();
+	Vector<String>vTitle = new Vector<>();
+	Vector<String>vGenre = new Vector<>();
+	Vector<Integer>vRating = new Vector<>();
+	Vector<Integer>vPrice = new Vector<>();
+	
+	void clear(){
+		for (int i=0; i<30; i++){
+			System.out.println();
+		}
+	}
+	
+	
+	int catchNum(){
+		int a=-1;
+		try {
+			a = scan.nextInt();
+		} catch (Exception e) {
+			// TODO: handle exception
+		} scan.nextLine();
+		return a;
+	}
+	
+	
+	int makeRandom(int min, int max){
+		//min = 0
+		//max = 9
+		return rand.nextInt(max-min+1)+min;
+	}
+	
+	
+	void addMovie(){
+		String title="", genre="", id="";
+		int rating=-1, price=-1, addPrice=-1;
+		do {
+			System.out.print("Input Movie Title [3-20]: ");
+			title = scan.nextLine();
+		} while(title.length()<3 || title.length()>20);
+		
+		do {
+			System.out.print("Input Movie Genre [Horror | Comedy | Action] (sensitive): ");
+			genre = scan.nextLine();
+		} while(!genre.equals("Horror") && !genre.equals("Comedy") && !genre.equals("Action"));
+		
+		do {
+			System.out.print("Input Movie Rating [1-10]: ");
+			rating = catchNum();
+		} while(rating<1 || rating>10);
+		System.out.println();
+		
+		id = id + ((char)makeRandom('A', 'Z')) + ((char)makeRandom('A', 'Z')) 
+				+ (makeRandom(0,9)) + (makeRandom(0,9)) 
+				+ (makeRandom(0,9));
+		System.out.println("Generated Movie ID: " + id);
+		
+		if(genre.equals("Comedy")) {
+			addPrice = 3000;
+		}
+		else if(genre.equals("Action")) {
+			addPrice = 4000;
+		}
+		else {
+			addPrice = 5000;
+		}
+		
+		price = (title.length()*500) + addPrice;
+		
+		vId.add(id);
+		vTitle.add(title);
+		vGenre.add(genre);
+		vRating.add(rating);
+		vPrice.add(price);
+		System.out.println("\nInsert Success");
+				
+	}
+	
+	
+	void print(){
+		System.out.printf("%-5s %-7s %-35s %-10s %-3s %-10s\n", "NO", "ID", "Title", "Genre", "Rating", "Price");
+//		System.out.println("NO |  ID   |  Title               |  Genre    | Rating | Price    |");
+		for(int i=0; i<vId.size(); i++){
+			System.out.printf("%-5d %-7s %-35s %-10s %-3d %-10d\n", (i+1), vId.get(i), vTitle.get(i), vGenre.get(i), vRating.get(i), vPrice.get(i));
+//		System.out.println((i+1) + vId.get(i) + vTitle.get(i) + vGenre.get(i) + vRating.get(i) + vPrice.get(i));
+		}
+	}
+	
+	
+	void sort(){
+		for (int i=0; i<vId.size()-1; i++){
+			for (int j=i+1; j<vId.size(); j++){
+				if(vTitle.get(i).compareTo(vTitle.get(j))>0){
+					//swap ID
+					String tempId = vId.get(i);
+					vId.set(i, vId.get(j));
+					vId.set(j, tempId);
+					
+					//swap Title
+					String tempTitle = vTitle.get(i);
+					vTitle.set(i, vTitle.get(j));
+					vTitle.set(j, tempTitle);
+					
+					//swap Genre
+					String tempGenre = vGenre.get(i);
+					vGenre.set(i, vGenre.get(j));
+					vGenre.set(j, tempGenre);
+					
+					//swap Rating
+					int tempRating = vRating.get(i);
+					vRating.set(i, vRating.get(j));
+					vRating.set(j, tempRating);
+					
+					//swap Price
+					int tempPrice = vPrice.get(i);
+					vPrice.set(i, vPrice.get(j));
+					vPrice.set(j, tempPrice);
+				}
+			}
+		}
+	}
+	
+	
+	void viewMovie(){
+		if (vId.isEmpty()){
+			System.out.println("No Movie Found");
+		}
+		
+		else {
+			sort();
+			print();
+		}
+	}
+	
+	
+	void rentMovie(){
+		int index=-1, money=-1, change=-1;
+		
+		if(vId.isEmpty()){
+			System.out.println("No Movie Found");
+		}
+		
+		else {
+			print();
+			
+			do {
+				System.out.print("Choose Movie index [1-" + vId.size() + "]: ");
+				 try {
+					index = scan.nextInt();
+				} catch (Exception e) {
+					System.out.println("Input must be numeric");
+				} scan.nextLine();
+			} while (index<1 || index>vId.size());
+			
+//			index-=1;
+			
+			do {
+				System.out.print("Input Money to Rent [Min"+ vPrice.get(index)+"]: ");
+				money = catchNum();
+			} while (money<vPrice.get(index));
+			
+			change = money-vPrice.get(index);
+			System.out.println("Pay Rent Successful with " + change + "Change");
+		}
+	}
+	
+	
+	void mainMenu(){
+		int input=-1;
+		
+		do {
+			clear();
+			System.out.println("============");
+			System.out.println("Movie Rental");
+			System.out.println("============");
+			System.out.println("1. Add New Movie");
+			System.out.println("2. View Movie (Sort by Title Ascending)");
+			System.out.println("3. Rent Movie");
+			System.out.println("4. Exit");
+			
+			do {
+				System.out.print(">>");
+				input = catchNum();
+			} while (input<1 || input>4);
+			
+			switch(input){
+			case 1:
+				clear();
+				addMovie();
+				break;
+				
+			case 2:
+				clear();
+				viewMovie();
+				break;
+				
+			case 3:
+				clear();
+				rentMovie();
+				break;
+			}
+			
+		} while (input!=4);
+			System.out.println("See You!");
+			System.exit(0);
+	}
+	
+	public Main() {
+		mainMenu();
+	}
+
+	public static void main(String[] args) {
+		new Main();
+		
+	}
+
+}
